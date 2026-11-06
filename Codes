@@ -1,0 +1,250 @@
+
+# SMART TEXT ANALYZER
+# Class 11 Computer Science
+# File Handling and Word Frequency
+# No user-defined functions
+
+import string
+
+filename = "class_notes.txt"
+
+print("=" * 50)
+print("       SMART TEXT ANALYZER")
+print("=" * 50)
+
+while True:
+
+    print("\n========== MAIN MENU ==========")
+    print("1. Add Text")
+    print("2. Display Saved Text")
+    print("3. Analyze Text")
+    print("4. Find Word Frequency")
+    print("5. Display Top 10 Words")
+    print("6. Exit")
+
+    choice = input("\nEnter choice: ")
+
+    # ADD TEXT
+
+    if choice == "1":
+
+        text = input(
+            "Enter text to save: "
+        ).strip()
+
+        if text == "":
+
+            print("Empty text cannot be saved.")
+
+        else:
+
+            with open(filename, "a", encoding="utf-8") as file:
+
+                file.write(text + "\n")
+
+            print("Text saved successfully!")
+
+    # DISPLAY TEXT
+
+    elif choice == "2":
+
+        try:
+
+            with open(filename, "r", encoding="utf-8") as file:
+
+                content = file.read()
+
+                if content.strip() == "":
+
+                    print("File is empty.")
+
+                else:
+
+                    print("\n========== SAVED TEXT ==========")
+
+                    print(content)
+
+        except FileNotFoundError:
+
+            print("No text file found. Add text first.")
+
+    # ANALYZE TEXT
+
+    elif choice == "3":
+
+        try:
+
+            with open(filename, "r", encoding="utf-8") as file:
+
+                content = file.read()
+
+            cleaned_text = content.lower().translate(
+                str.maketrans("", "", string.punctuation)
+            )
+
+            words = cleaned_text.split()
+
+            total_words = len(words)
+
+            unique_words = set(words)
+
+            total_characters = len(content)
+
+            characters_without_spaces = len(
+                content.replace(" ", "").replace("\n", "")
+            )
+
+            print("\n========== TEXT ANALYSIS ==========")
+
+            print("Total Words:", total_words)
+
+            print("Unique Words:", len(unique_words))
+
+            print("Total Characters:", total_characters)
+
+            print(
+                "Characters Without Spaces:",
+                characters_without_spaces
+            )
+
+            print("Total Lines:", len(content.splitlines()))
+
+            if total_words > 0:
+
+                average_length = sum(
+                    len(word) for word in words
+                ) / total_words
+
+                print(
+                    "Average Word Length:",
+                    round(average_length, 2)
+                )
+
+        except FileNotFoundError:
+
+            print("No text file found.")
+
+    # FIND WORD FREQUENCY
+
+    elif choice == "4":
+
+        search_word = input(
+            "Enter word to search: "
+        ).strip().lower()
+
+        try:
+
+            with open(filename, "r", encoding="utf-8") as file:
+
+                content = file.read()
+
+            cleaned_text = content.lower().translate(
+                str.maketrans("", "", string.punctuation)
+            )
+
+            words = cleaned_text.split()
+
+            frequency = 0
+
+            for word in words:
+
+                if word == search_word:
+
+                    frequency += 1
+
+            print("\nWord:", search_word)
+
+            print("Frequency:", frequency)
+
+            if frequency == 0:
+
+                print("Word not found.")
+
+        except FileNotFoundError:
+
+            print("No text file found.")
+
+    # TOP 10 WORDS
+
+    elif choice == "5":
+
+        try:
+
+            with open(filename, "r", encoding="utf-8") as file:
+
+                content = file.read()
+
+            cleaned_text = content.lower().translate(
+                str.maketrans("", "", string.punctuation)
+            )
+
+            words = cleaned_text.split()
+
+            frequency = {}
+
+            for word in words:
+
+                if word in frequency:
+
+                    frequency[word] += 1
+
+                else:
+
+                    frequency[word] = 1
+
+            word_list = list(frequency.items())
+
+            # SORT WORDS BY FREQUENCY
+
+            for i in range(len(word_list)):
+
+                for j in range(
+                    0, len(word_list) - i - 1
+                ):
+
+                    if (
+                        word_list[j][1]
+                        < word_list[j + 1][1]
+                    ):
+
+                        word_list[j], word_list[j + 1] = (
+                            word_list[j + 1],
+                            word_list[j]
+                        )
+
+            print("\n========== TOP 10 WORDS ==========")
+
+            if len(word_list) == 0:
+
+                print("No words available.")
+
+            else:
+
+                for index, item in enumerate(
+                    word_list[:10], 1
+                ):
+
+                    print(
+                        index,
+                        ".",
+                        item[0],
+                        "->",
+                        item[1],
+                        "times"
+                    )
+
+        except FileNotFoundError:
+
+            print("No text file found.")
+
+    # EXIT
+
+    elif choice == "6":
+
+        print("\nText Analyzer closed successfully.")
+
+        break
+
+    else:
+
+        print("Invalid choice! Select 1 to 6.")
